@@ -37,6 +37,11 @@ def main(page: ft.Page):
 
     # Tutti i TextField per le info necessarie per aggiungere un nuovo strumento (tipo, marca, anno, contatore posti)
     # TODO
+    tipo_input = ft.TextField(label="Tipo")
+    marca_input = ft.TextField(label="Marca")
+    anno_input = ft.TextField(label="Anno")
+
+    txt_contatore = ft.TextField(value='0', width=60, disabled=True, text_align=ft.TextAlign.CENTER)
 
     # --- FUNZIONI APP ---
     def aggiorna_lista_strumenti():
@@ -56,6 +61,30 @@ def main(page: ft.Page):
 
     # Handlers per la gestione dei pulsanti utili all'inserimento di un nuovo strumento
     # TODO
+    def aggiungi_str(e):
+        try:
+            anno = int(anno_input.value)
+            valore = int(txt_contatore.value)
+            deposito.aggiungi_strumento(
+                tipo_input.value,
+                marca_input.value,
+                anno,
+                valore
+            )
+            tipo_input.value = marca_input.value = anno_input.value = txt_contatore.value = " "
+            aggiorna_lista_strumenti()
+        except ValueError:
+            alert.show_alert("Errore: inserisci valori numerici per anno e prezzo")
+
+    def incrementa_prezzo(e):
+        current_val = txt_contatore.value
+        txt_contatore.value = f"{int(current_val)+1}"
+        txt_contatore.update()
+
+    def decrementa_prezzo(e):
+        current_val = txt_contatore.value
+        txt_contatore.value = f"{int(current_val)-1}"
+        txt_contatore.update()
 
     # --- EVENTI ---
     toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=cambia_tema)
@@ -63,6 +92,9 @@ def main(page: ft.Page):
 
     # Pulsanti per la gestione dell'inserimento di un nuovo strumento
     # TODO
+    pulsante_aggiungi_str = ft.Button("Aggiungi strumento", on_click=aggiungi_str)
+    pulsante_incrementa_prezzo = ft.IconButton(icon=ft.Icons.ADD, icon_color="green", on_click=incrementa_prezzo)
+    pulsante_decrementa_prezzo = ft.IconButton(icon=ft.Icons.REMOVE, icon_color="red", on_click=decrementa_prezzo)
 
     # --- LAYOUT ---
     page.add(
@@ -81,6 +113,13 @@ def main(page: ft.Page):
 
         # Sezione 3
         # TODO
+        ft.Divider(),
+        ft.Text("Aggiungi nuovo strumento", size=20),
+        ft.Row(spacing=30,
+               controls=[tipo_input, marca_input, anno_input,
+                         pulsante_decrementa_prezzo, txt_contatore, pulsante_incrementa_prezzo],
+               alignment=ft.MainAxisAlignment.CENTER),
+        pulsante_aggiungi_str,
 
         # Sezione 4
         ft.Divider(),
